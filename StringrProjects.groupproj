@@ -1,0 +1,48 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{C1DB6017-3F32-4E4D-9946-3790E8414BFD}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="Stringr.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="Test\StringrTests.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="Stringr">
+			<MSBuild Projects="Stringr.dproj"/>
+		</Target>
+		<Target Name="Stringr:Clean">
+			<MSBuild Targets="Clean" Projects="Stringr.dproj"/>
+		</Target>
+		<Target Name="Stringr:Make">
+			<MSBuild Targets="Make" Projects="Stringr.dproj"/>
+		</Target>
+		<Target Name="StringrTests">
+			<MSBuild Projects="Test\StringrTests.dproj"/>
+		</Target>
+		<Target Name="StringrTests:Clean">
+			<MSBuild Targets="Clean" Projects="Test\StringrTests.dproj"/>
+		</Target>
+		<Target Name="StringrTests:Make">
+			<MSBuild Targets="Make" Projects="Test\StringrTests.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="Stringr;StringrTests"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="Stringr:Clean;StringrTests:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="Stringr:Make;StringrTests:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>

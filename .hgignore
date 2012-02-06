@@ -1,0 +1,6 @@
+syntax: glob
+__history/*
+*exe
+*.local
+*.identcache
+*dcu
