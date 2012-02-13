@@ -47,6 +47,7 @@
 				<Form>Form1</Form>
 			</DCCReference>
 			<DCCReference Include="UStringr.pas"/>
+			<DCCReference Include="Utils\RegExpr.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -74,7 +75,7 @@
 						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 					</Parameters>
 					<Language>
-						<Language Name="RootDir">C:\Users\evandro\Desktop\Projetos\Stringr\</Language>
+						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
 					</Language>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>

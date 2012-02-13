@@ -3,7 +3,8 @@ program Stringr;
 uses
   Forms,
   UMain in 'UMain.pas' {Form1},
-  UStringr in 'UStringr.pas';
+  UStringr in 'UStringr.pas',
+  RegExpr in 'Utils\RegExpr.pas';
 
 {$R *.res}
 

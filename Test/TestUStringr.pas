@@ -26,9 +26,36 @@ type
   published
     procedure TestParametroSemRepeticao;
     procedure TestParametroComRepeticao;
+    procedure TestDataSemFormato;
+    procedure TestDataComFormato;
+    procedure HoraSemFormato;
+    procedure HoraComFormato;
   end;
 
 implementation
+
+uses
+  SysUtils;
+
+procedure TestTStringr.HoraComFormato;
+var
+  ReturnValue: string;
+  Formato: string;
+begin
+  Formato := 'h "h" m "m" s "s"';
+  FStringr := TStringr.Create('{Time:' + Formato + '}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(FormatDateTime(Formato, Time), ReturnValue);
+end;
+
+procedure TestTStringr.HoraSemFormato;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('{Time}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(TimeToStr(Time), ReturnValue);
+end;
 
 procedure TestTStringr.SetUp;
 begin
@@ -36,6 +63,27 @@ end;
 
 procedure TestTStringr.TearDown;
 begin
+end;
+
+procedure TestTStringr.TestDataComFormato;
+var
+  ReturnValue: string;
+  Formato: string;
+begin
+  Formato := 'dd-mm-yyyy';
+  FStringr := TStringr.Create('{Date:' + Formato + '}');
+//  FStringr := TStringr.Create('Hoje é {date:dddd, d "de" mmmm "do ano de" yyyy}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(FormatDateTime(Formato, Date), ReturnValue);
+end;
+
+procedure TestTStringr.TestDataSemFormato;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('{Date}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(DateToStr(Date), ReturnValue);
 end;
 
 procedure TestTStringr.TestParametroComRepeticao;
