@@ -1,0 +1,11 @@
+* Formato padrão de data e hora:
+  Hoje é {date} e agora são {time}.
+
+* Formatos personalizados:
+  - Data e hora curtas:
+  Hoje é {date:dd.mm.yyyy} e agora são {time:hh:nn}.
+  Hoje é {date:dd-mm-yyyy} e agora são {time:hh:nn:ss}.
+
+  - Data e hora longas:  
+  Hoje é {date:dddd, d "de" mmmm "do ano de" yyyy}
+  e agora são {time:h "hora(s)", n "minuto(s)" e s "segundo(s)."}.
