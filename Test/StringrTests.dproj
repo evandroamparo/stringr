@@ -47,6 +47,7 @@
 			</DelphiCompile>
 			<DCCReference Include="TestUStringr.pas"/>
 			<DCCReference Include="..\UStringr.pas"/>
+			<DCCReference Include="..\Utils\RegExpr.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

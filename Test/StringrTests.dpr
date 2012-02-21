@@ -20,7 +20,8 @@ uses
   GUITestRunner,
   TextTestRunner,
   TestUStringr in 'TestUStringr.pas',
-  UStringr in '..\UStringr.pas';
+  UStringr in '..\UStringr.pas',
+  RegExpr in '..\Utils\RegExpr.pas';
 
 {$R *.RES}
 
