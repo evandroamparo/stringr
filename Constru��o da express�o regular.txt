@@ -1,0 +1,60 @@
+Somente nome do parâmetro:
+/i
+{(\w+)}
+
+Atributos e valores:
+{(?gi)(\w+)( (.+))?}
+
+Listas (abertura e fechamento):
+{(?gi)(\/?)(\w+)( (.+))?}
+
+Listas com parâmetros locais:
+{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+))?}
+
+------------
+Atributos delimitados por aspas e com caracter de escape \':
+(?gi)\w+=(('((\\'|[^'}])+)')|([^} ]+))
+
+
+-----------
+Entrada:
+
+{parametro}
+{parametro atributo=valor}
+{parametro atributo1=valor1 atributo2=valor2}
+{parametro atributo1=valor1 atributo2=valor2}
+{parametro atributo1=valor1 atributo2='val\'or2'}
+{parametro atributo='v a l ó r'}
+{list nome_lista}
+{nome_lista.parametro}
+{nome_lista.parametro atributo='valor'}
+{/list}
+{list}
+
+
+Teste de substituição:
+$\0: <$&>
+$\1: <$1>
+$\2: <$2>
+$\3: <$3>
+$\4: <$4>
+$\5: <$5>
+$\6: <$6>
+$\7: <$7>
+$\8: <$8>
+$\9: <$9>
+$\10: <$10>
+$\11: <$11>
+$\12: <$12>
+$\13: <$13>
+$\14: <$14>
+
+Subexpressões:
+$0: <{expressão inteira}>
+$1: </> (fim da lista) ou vazio
+$2: <parametro> (parâmetro comum - é preferível o $5) ou <nome_lista.parametro> (parâmetro da lista) ou "list" (início de lista)
+$3: <nome_lista.> ou vazio
+$4: <nome_lista> (parâmetro da lista) ou vazio
+$5: <parametro> (parâmetro comum ou da lista) ou "list" (início de lista)
+$6: < nome_lista>
+$7: <nome_lista> (início de lista)
