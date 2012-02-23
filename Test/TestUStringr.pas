@@ -28,13 +28,13 @@ type
     procedure TestParametroComRepeticao;
     procedure TestDataSemFormato;
     procedure TestDataComFormato;
-    procedure HoraSemFormato;
-    procedure HoraComFormato;
-    //Maiúsculas
-    //Minúsculas
-    //Size
-    //atributos com aspas
-    //caracteres de escape \'
+    procedure TestHoraSemFormato;
+    procedure TestHoraComFormato;
+    procedure TestDataHora;
+    procedure TestUpperCase;
+    procedure TestLowerCase;
+    procedure TestParametroTruncado;
+    procedure TestCaracterEscape;
   end;
 
 implementation
@@ -42,7 +42,7 @@ implementation
 uses
   SysUtils;
 
-procedure TestTStringr.HoraComFormato;
+procedure TestTStringr.TestHoraComFormato;
 var
   ReturnValue: string;
   Formato: string;
@@ -53,13 +53,23 @@ begin
   CheckEquals(FormatDateTime(Formato, Time), ReturnValue);
 end;
 
-procedure TestTStringr.HoraSemFormato;
+procedure TestTStringr.TestHoraSemFormato;
 var
   ReturnValue: string;
 begin
   FStringr := TStringr.Create('{Time}');
   ReturnValue := FStringr.Render;
   CheckEquals(TimeToStr(Time), ReturnValue);
+end;
+
+procedure TestTStringr.TestLowerCase;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('Hello, {name case=lower}!');
+  FStringr['name'] := 'WORLD';
+  ReturnValue := FStringr.Render;
+  CheckEquals('Hello, world!', ReturnValue);
 end;
 
 procedure TestTStringr.SetUp;
@@ -70,6 +80,18 @@ procedure TestTStringr.TearDown;
 begin
 end;
 
+procedure TestTStringr.TestCaracterEscape;
+var
+  ReturnValue: string;
+  FormatoOriginal, FormatoEquivalente: string;
+begin
+  FormatoOriginal := 'dd \''de\'' mmmm \''de\'' yyyy';
+  FormatoEquivalente := 'dd ''de'' mmmm ''de'' yyyy';
+  FStringr := TStringr.Create('{Date format=''' + FormatoOriginal + '''}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(FormatDateTime(FormatoEquivalente, Date), ReturnValue);
+end;
+
 procedure TestTStringr.TestDataComFormato;
 var
   ReturnValue: string;
@@ -77,7 +99,6 @@ var
 begin
   Formato := 'dd-mm-yyyy';
   FStringr := TStringr.Create('{Date format=' + Formato + '}');
-//  FStringr := TStringr.Create('Hoje é {date:dddd, d "de" mmmm "do ano de" yyyy}');
   ReturnValue := FStringr.Render;
   CheckEquals(FormatDateTime(Formato, Date), ReturnValue);
 end;
@@ -89,6 +110,15 @@ begin
   FStringr := TStringr.Create('{Date}');
   ReturnValue := FStringr.Render;
   CheckEquals(DateToStr(Date), ReturnValue);
+end;
+
+procedure TestTStringr.TestDataHora;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('{DateTime}');
+  ReturnValue := FStringr.Render;
+  CheckEquals(DateTimeToStr(Now), ReturnValue);
 end;
 
 procedure TestTStringr.TestParametroComRepeticao;
@@ -109,6 +139,26 @@ begin
   FStringr['name'] := 'world';
   ReturnValue := FStringr.Render;
   CheckEquals('Hello, world!', ReturnValue);
+end;
+
+procedure TestTStringr.TestUpperCase;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('Hello, {name case=upper}!');
+  FStringr['name'] := 'world';
+  ReturnValue := FStringr.Render;
+  CheckEquals('Hello, WORLD!', ReturnValue);
+end;
+
+procedure TestTStringr.TestParametroTruncado;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('Hello, {name length=3}!');
+  FStringr['name'] := 'world';
+  ReturnValue := FStringr.Render;
+  CheckEquals('Hello, wor!', ReturnValue);
 end;
 
 initialization
