@@ -30,6 +30,11 @@ type
     procedure TestDataComFormato;
     procedure HoraSemFormato;
     procedure HoraComFormato;
+    //Maiúsculas
+    //Minúsculas
+    //Size
+    //atributos com aspas
+    //caracteres de escape \'
   end;
 
 implementation
@@ -43,7 +48,7 @@ var
   Formato: string;
 begin
   Formato := 'h "h" m "m" s "s"';
-  FStringr := TStringr.Create('{Time:' + Formato + '}');
+  FStringr := TStringr.Create('{Time format=''' + Formato + '''}');
   ReturnValue := FStringr.Render;
   CheckEquals(FormatDateTime(Formato, Time), ReturnValue);
 end;
@@ -71,7 +76,7 @@ var
   Formato: string;
 begin
   Formato := 'dd-mm-yyyy';
-  FStringr := TStringr.Create('{Date:' + Formato + '}');
+  FStringr := TStringr.Create('{Date format=' + Formato + '}');
 //  FStringr := TStringr.Create('Hoje é {date:dddd, d "de" mmmm "do ano de" yyyy}');
   ReturnValue := FStringr.Render;
   CheckEquals(FormatDateTime(Formato, Date), ReturnValue);
