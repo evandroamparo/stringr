@@ -64,6 +64,7 @@ type
     const EXP_ATTR = '(?gi)(\w+)=((''((\\''|[^''}])+)'')|([^} ]+))';
     const DATE_PARAM = 'Date';
     const TIME_PARAM = 'Time';
+    const DATE_TIME_PARAM = 'DateTime';
     function GetParams(const Param: string): String;
     procedure SetParams(const Param, Value: String);
 
@@ -115,9 +116,10 @@ begin
     if RegEx.Exec(S) then
     begin
       repeat
-        Val := RegEx.Substitute('$4');
+        Val := RegEx.Substitute('$4'); // com aspas
         if Val = '' then
-          Val := RegEx.Substitute('$6');
+          Val := RegEx.Substitute('$6'); // sem aspas
+        Val := StringReplace(Val, '\''', '''', [rfReplaceAll]);
         Result.Add(AnsiLowerCase(RegEx.Substitute('$1')) + '=' + Val);
       until not RegEx.ExecNext;
     end;
@@ -199,17 +201,16 @@ var
   Nome, Valor, StrAtributos: String;
   ListaAtributos: TStringList;
 begin
-//  ProcessSpecialParams;
-
   RegExp.Expression := EXP;
 
   if RegExp.Exec(FTemplate) then
   begin
-    repeat { proceed results}
+    repeat
       Nome := RegExp.Substitute('$5');
+      ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
+
       if AnsiCompareText(Nome, DATE_PARAM) = 0 then
       begin
-        ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
         if ListaAtributos.Values['format'] <> '' then
           Valor := FormatDateTime(ListaAtributos.Values['format'], Date)
         else
@@ -217,14 +218,29 @@ begin
       end
       else if AnsiCompareText(Nome, TIME_PARAM) = 0 then
       begin
-        ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
         if ListaAtributos.Values['format'] <> '' then
           Valor := FormatDateTime(ListaAtributos.Values['format'], Time)
         else
           Valor := TimeToStr(Time);
       end
+      else if AnsiCompareText(Nome, DATE_TIME_PARAM) = 0 then
+      begin
+        if ListaAtributos.Values['format'] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values['format'], Date)
+        else
+          Valor := DateTimeToStr(Now);
+      end
       else
         Valor := FParams.Values[Nome];
+
+      if ListaAtributos.Values['case'] = 'upper' then
+        Valor := AnsiUpperCase(Valor)
+      else if ListaAtributos.Values['case'] = 'lower' then
+        Valor := AnsiLowerCase(Valor);
+
+      if ListaAtributos.Values['length'] <> '' then
+        Valor := Copy(Valor, 1,
+                      StrToIntDef(ListaAtributos.Values['length'], Length(Valor)));
 
       FTemplate := StringReplace(FTemplate,
                                  RegExp.Substitute('$0'),
