@@ -61,16 +61,37 @@ type
     RegExp: TRegExpr;
 
     const EXP = '{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+))?}';
+    const TPL_EXP = '$0';
+    const TPL_LIST_END = '$1';
+    const TPL_LIST = '$2';
+    const TPL_LIST_PARAM = '$4';
+    const TPL_PARAM = '$5';
+    const TPL_LIST_ATTR = '$7';
+
     const EXP_ATTR = '(?gi)(\w+)=((''((\\''|[^''}])+)'')|([^} ]+))';
+    const TPL_ATTR = '$1';
+    const TPL_VAL_QUOTES = '$4';
+    const TPL_VAL_NOQUOTES = '$6';
+
     const DATE_PARAM = 'Date';
     const TIME_PARAM = 'Time';
     const DATE_TIME_PARAM = 'DateTime';
+
+    const ATTR_CASE = 'case';
+    const ATTR_VAL_UPPERCASE = 'upper';
+    const ATTR_VAL_LOWERCASE = 'lower';
+    const	ATTR_LENGTH = 'length';
+    const ATTR_FORMAT = 'format';
+
+    const ESC_CHAR = '\';
+    const QUOTES = '''';
+    const TAG_BEGIN = '{';
+    const TAG_END = '}';
+
     function GetParams(const Param: string): String;
     procedure SetParams(const Param, Value: String);
 
   protected
-    procedure ProcessSpecialParams;
-    procedure ProcessDateTime(*DataHora: TDataHora*);
     function ParseAtributes(S: String): TStringList;
   public
     property Params[const Param: string]: String read GetParams write SetParams; default;
@@ -116,83 +137,16 @@ begin
     if RegEx.Exec(S) then
     begin
       repeat
-        Val := RegEx.Substitute('$4'); // com aspas
+        Val := RegEx.Substitute(TPL_VAL_QUOTES);
         if Val = '' then
-          Val := RegEx.Substitute('$6'); // sem aspas
-        Val := StringReplace(Val, '\''', '''', [rfReplaceAll]);
-        Result.Add(AnsiLowerCase(RegEx.Substitute('$1')) + '=' + Val);
+          Val := RegEx.Substitute(TPL_VAL_NOQUOTES);
+        Val := StringReplace(Val, ESC_CHAR + QUOTES, QUOTES, [rfReplaceAll]);
+        Result.Add(AnsiLowerCase(RegEx.Substitute(TPL_ATTR)) + '=' + Val);
       until not RegEx.ExecNext;
     end;
   finally
     RegEx.Free;
   end;
-end;
-
-procedure TStringr.ProcessDateTime(*DataHora: TDataHora*);
-var
-  PosInicialParamentro, PosInicialFormato, PosFinal, i: Integer;
-  Parametro, Formato: String;
-  ParamName, ParamValue: string;
-begin
-//  case DataHora of
-//    dhData: ParamName := DATE_PARAM;
-//    dhHora: ParamName := TIME_PARAM;
-//  end;
-
-  FTemplate := StringReplace(FTemplate, '{' + ParamName + '}', DateToStr(Date),
-      [rfReplaceAll, rfIgnoreCase]);
-
-  PosFinal := 0;
-
-  while AnsiContainsText(FTemplate, '{' + ParamName + ':') do
-  begin
-    Formato := '';
-    PosInicialParamentro :=
-        AnsiPos(AnsiUpperCase('{' + ParamName + ':'),
-                AnsiUpperCase(FTemplate)) + 1;
-    for i := PosInicialParamentro + 1 to Length(FTemplate) do
-    begin
-      if FTemplate[i] = '}' then
-      begin
-        PosFinal := i;
-        Parametro := Copy(FTemplate,
-                          PosInicialParamentro - 1,
-                          PosFinal - PosInicialParamentro + 2);
-        Break;
-      end;
-    end;
-    for i := 1 to Length(Parametro) do
-    begin
-      if Parametro[i] = ':' then
-      begin
-        PosInicialFormato := i + 1;
-        Formato := Copy(Parametro, PosInicialFormato, Length(Parametro) - PosInicialFormato);
-        Break;
-      end;
-    end;
-//    if Formato <> '' then
-//      case DataHora of
-//        dhData: ParamValue := FormatDateTime(Formato, Date);
-//        dhHora: ParamValue := FormatDateTime(Formato, Time);
-//      end;
-//      FTemplate := StuffString(
-//                      FTemplate,
-//                      PosInicialParamentro - 1,
-//                      PosFinal - PosInicialParamentro + 3,
-//                      ParamValue);
-  end;
-
-  FTemplate := StringReplace(FTemplate, '{time}', TimeToStr(Time),
-      [rfReplaceAll, rfIgnoreCase]);
-end;
-
-procedure TStringr.ProcessSpecialParams;
-var
-  PosInicialParamentro, PosInicialFormato, PosFinal, i: Integer;
-  Parametro, Formato: String;
-begin
-  ProcessDateTime(*dhData*);
-  ProcessDateTime(*dhHora*);
 end;
 
 function TStringr.Render: String;
@@ -206,44 +160,44 @@ begin
   if RegExp.Exec(FTemplate) then
   begin
     repeat
-      Nome := RegExp.Substitute('$5');
-      ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
+      Nome := RegExp.Substitute(TPL_PARAM);
+      ListaAtributos := ParseAtributes(RegExp.Substitute(TPL_LIST_ATTR));
 
       if AnsiCompareText(Nome, DATE_PARAM) = 0 then
       begin
-        if ListaAtributos.Values['format'] <> '' then
-          Valor := FormatDateTime(ListaAtributos.Values['format'], Date)
+        if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Date)
         else
           Valor := DateToStr(Date);
       end
       else if AnsiCompareText(Nome, TIME_PARAM) = 0 then
       begin
-        if ListaAtributos.Values['format'] <> '' then
-          Valor := FormatDateTime(ListaAtributos.Values['format'], Time)
+        if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Time)
         else
           Valor := TimeToStr(Time);
       end
       else if AnsiCompareText(Nome, DATE_TIME_PARAM) = 0 then
       begin
-        if ListaAtributos.Values['format'] <> '' then
-          Valor := FormatDateTime(ListaAtributos.Values['format'], Date)
+        if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Date)
         else
           Valor := DateTimeToStr(Now);
       end
       else
         Valor := FParams.Values[Nome];
 
-      if ListaAtributos.Values['case'] = 'upper' then
+      if ListaAtributos.Values[ATTR_CASE] = ATTR_VAL_UPPERCASE then
         Valor := AnsiUpperCase(Valor)
-      else if ListaAtributos.Values['case'] = 'lower' then
+      else if ListaAtributos.Values[ATTR_CASE] = ATTR_VAL_LOWERCASE then
         Valor := AnsiLowerCase(Valor);
 
-      if ListaAtributos.Values['length'] <> '' then
+      if ListaAtributos.Values[ATTR_LENGTH] <> '' then
         Valor := Copy(Valor, 1,
-                      StrToIntDef(ListaAtributos.Values['length'], Length(Valor)));
+                      StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)));
 
       FTemplate := StringReplace(FTemplate,
-                                 RegExp.Substitute('$0'),
+                                 RegExp.Substitute(TPL_EXP),
                                  Valor,
                                  [rfIgnoreCase]);
     until not RegExp.ExecNext;

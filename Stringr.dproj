@@ -43,9 +43,6 @@
 			<DelphiCompile Include="Stringr.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="UMain.pas">
-				<Form>Form1</Form>
-			</DCCReference>
 			<DCCReference Include="UStringr.pas"/>
 			<DCCReference Include="Utils\RegExpr.pas"/>
 			<BuildConfiguration Include="Base">
@@ -74,9 +71,6 @@
 						<Parameters Name="LoadAllSymbols">True</Parameters>
 						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 					</Parameters>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
-					</Language>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
