@@ -60,13 +60,14 @@ type
   private
     RegExp: TRegExpr;
 
-    const EXP = '{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+))?}';
+    const EXP = '{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+?))?}';
     const TPL_EXP = '$0';
     const TPL_LIST_END = '$1';
     const TPL_LIST = '$2';
     const TPL_LIST_PARAM = '$4';
     const TPL_PARAM = '$5';
-    const TPL_LIST_ATTR = '$7';
+    const TPL_PARAM_ATTR = '$7';
+    const TPL_LIST_BEGIN = '$7';
 
     const EXP_ATTR = '(?gi)(\w+)=((''((\\''|[^''}])+)'')|([^} ]+))';
     const TPL_ATTR = '$1';
@@ -151,8 +152,7 @@ end;
 
 function TStringr.Render: String;
 var
-  i: Integer;
-  Nome, Valor, StrAtributos: String;
+  Nome, Valor: String;
   ListaAtributos: TStringList;
 begin
   RegExp.Expression := EXP;
@@ -161,7 +161,7 @@ begin
   begin
     repeat
       Nome := RegExp.Substitute(TPL_PARAM);
-      ListaAtributos := ParseAtributes(RegExp.Substitute(TPL_LIST_ATTR));
+      ListaAtributos := ParseAtributes(RegExp.Substitute(TPL_PARAM_ATTR));
 
       if AnsiCompareText(Nome, DATE_PARAM) = 0 then
       begin
@@ -180,7 +180,7 @@ begin
       else if AnsiCompareText(Nome, DATE_TIME_PARAM) = 0 then
       begin
         if ListaAtributos.Values[ATTR_FORMAT] <> '' then
-          Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Date)
+          Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Now)
         else
           Valor := DateTimeToStr(Now);
       end

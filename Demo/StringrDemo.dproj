@@ -1,8 +1,8 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{565F2308-3856-4D93-B3A8-12504AEDF80E}</ProjectGuid>
+			<ProjectGuid>{1F492811-B3DA-43F4-812C-50F46801293A}</ProjectGuid>
 			<ProjectVersion>12.0</ProjectVersion>
-			<MainSource>Stringr.dpr</MainSource>
+			<MainSource>StringrDemo.dpr</MainSource>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 		</PropertyGroup>
@@ -20,7 +20,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_DependencyCheckOutputName>Stringr.exe</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>StringrDemo.exe</DCC_DependencyCheckOutputName>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_Platform>x86</DCC_Platform>
@@ -40,11 +40,14 @@
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="Stringr.dpr">
+			<DelphiCompile Include="StringrDemo.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="UStringr.pas"/>
-			<DCCReference Include="Utils\RegExpr.pas"/>
+			<DCCReference Include="UMain.pas">
+				<Form>FMain</Form>
+			</DCCReference>
+			<DCCReference Include="..\UStringr.pas"/>
+			<DCCReference Include="..\Utils\RegExpr.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -64,7 +67,7 @@
 			<BorlandProject>
 				<Delphi.Personality>
 					<Source>
-						<Source Name="MainSource">Stringr.dpr</Source>
+						<Source Name="MainSource">StringrDemo.dpr</Source>
 					</Source>
 					<Parameters>
 						<Parameters Name="UseLauncher">False</Parameters>
@@ -99,7 +102,7 @@
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
+						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Demo\</Language>
 					</Language>
 				</Delphi.Personality>
 			</BorlandProject>

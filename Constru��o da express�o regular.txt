@@ -9,7 +9,7 @@ Listas (abertura e fechamento):
 {(?gi)(\/?)(\w+)( (.+))?}
 
 Listas com parâmetros locais:
-{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+))?}
+{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+?))?}
 
 ------------
 Atributos delimitados por aspas e com caracter de escape \':

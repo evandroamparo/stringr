@@ -9,6 +9,9 @@
 			<Projects Include="Test\StringrTests.dproj">
 				<Dependencies/>
 			</Projects>
+			<Projects Include="Demo\StringrDemo.dproj">
+				<Dependencies/>
+			</Projects>
 		</ItemGroup>
 		<ProjectExtensions>
 			<Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
 		<Target Name="StringrTests:Make">
 			<MSBuild Targets="Make" Projects="Test\StringrTests.dproj"/>
 		</Target>
+		<Target Name="StringrDemo">
+			<MSBuild Projects="Demo\StringrDemo.dproj"/>
+		</Target>
+		<Target Name="StringrDemo:Clean">
+			<MSBuild Targets="Clean" Projects="Demo\StringrDemo.dproj"/>
+		</Target>
+		<Target Name="StringrDemo:Make">
+			<MSBuild Targets="Make" Projects="Demo\StringrDemo.dproj"/>
+		</Target>
 		<Target Name="Build">
-			<CallTarget Targets="Stringr;StringrTests"/>
+			<CallTarget Targets="Stringr;StringrTests;StringrDemo"/>
 		</Target>
 		<Target Name="Clean">
-			<CallTarget Targets="Stringr:Clean;StringrTests:Clean"/>
+			<CallTarget Targets="Stringr:Clean;StringrTests:Clean;StringrDemo:Clean"/>
 		</Target>
 		<Target Name="Make">
-			<CallTarget Targets="Stringr:Make;StringrTests:Make"/>
+			<CallTarget Targets="Stringr:Make;StringrTests:Make;StringrDemo:Make"/>
 		</Target>
 		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 	</Project>

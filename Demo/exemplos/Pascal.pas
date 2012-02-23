@@ -1,4 +1,4 @@
-{ replace all occurence of "MyObject" with your object name }
+{ replace all occurences of "MyObject" with your object name }
 unit {UnitName};
 
 interface
