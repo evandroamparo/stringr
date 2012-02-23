@@ -61,6 +61,7 @@ type
     RegExp: TRegExpr;
 
     const EXP = '{(?gi)(\/?)(((\w+)\.)?(\w+))( (.+))?}';
+    const EXP_ATTR = '(?gi)(\w+)=((''((\\''|[^''}])+)'')|([^} ]+))';
     const DATE_PARAM = 'Date';
     const TIME_PARAM = 'Time';
     function GetParams(const Param: string): String;
@@ -69,6 +70,7 @@ type
   protected
     procedure ProcessSpecialParams;
     procedure ProcessDateTime(*DataHora: TDataHora*);
+    function ParseAtributes(S: String): TStringList;
   public
     property Params[const Param: string]: String read GetParams write SetParams; default;
     constructor Create(Template: String);
@@ -99,6 +101,29 @@ end;
 function TStringr.GetParams(const Param: string): String;
 begin
   Result := FParams.Values[Param];
+end;
+
+function TStringr.ParseAtributes(S: String): TStringList;
+var
+  RegEx: TRegExpr;
+  Val: String;
+begin
+  Result := TStringList.Create;
+  RegEx := TRegExpr.Create;
+  RegEx.Expression := EXP_ATTR;
+  try
+    if RegEx.Exec(S) then
+    begin
+      repeat
+        Val := RegEx.Substitute('$4');
+        if Val = '' then
+          Val := RegEx.Substitute('$6');
+        Result.Add(AnsiLowerCase(RegEx.Substitute('$1')) + '=' + Val);
+      until not RegEx.ExecNext;
+    end;
+  finally
+    RegEx.Free;
+  end;
 end;
 
 procedure TStringr.ProcessDateTime(*DataHora: TDataHora*);
@@ -171,10 +196,9 @@ end;
 function TStringr.Render: String;
 var
   i: Integer;
-  Nome: String;
+  Nome, Valor, StrAtributos: String;
+  ListaAtributos: TStringList;
 begin
-  { TODO : Processar parâmetros que estão no template mas não tem valor definido:
-           renderizar como '' }
 //  ProcessSpecialParams;
 
   RegExp.Expression := EXP;
@@ -183,9 +207,28 @@ begin
   begin
     repeat { proceed results}
       Nome := RegExp.Substitute('$5');
+      if AnsiCompareText(Nome, DATE_PARAM) = 0 then
+      begin
+        ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
+        if ListaAtributos.Values['format'] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values['format'], Date)
+        else
+          Valor := DateToStr(Date);
+      end
+      else if AnsiCompareText(Nome, TIME_PARAM) = 0 then
+      begin
+        ListaAtributos := ParseAtributes(RegExp.Substitute('$7'));
+        if ListaAtributos.Values['format'] <> '' then
+          Valor := FormatDateTime(ListaAtributos.Values['format'], Time)
+        else
+          Valor := TimeToStr(Time);
+      end
+      else
+        Valor := FParams.Values[Nome];
+
       FTemplate := StringReplace(FTemplate,
                                  RegExp.Substitute('$0'),
-                                 FParams.Values[Nome],
+                                 Valor,
                                  [rfIgnoreCase]);
     until not RegExp.ExecNext;
   end;
