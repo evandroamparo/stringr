@@ -1,6 +1,7 @@
 Seu nome completo: {nome}
 Em maiúsculas: {nome case=upper}
 Em minúsculas: {nome case=lower}
-Com apenas 5 caracteres: {nome length=5 case=upper}
+Com 3 caracteres: "{nome length=3 case=upper}"
+Com 10 caracteres: "{nome length=10 case=upper}"
 
 Texto gerado em {DateTime format='dddddd tt' case=upper}.
