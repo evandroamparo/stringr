@@ -193,9 +193,14 @@ begin
         Valor := AnsiLowerCase(Valor);
 
       if ListaAtributos.Values[ATTR_LENGTH] <> '' then
-        Valor := Copy(Valor, 1,
-                      StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)));
-
+      begin
+        if Length(Valor) > StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)) then
+          Valor := Copy(Valor, 1,
+                      StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)))
+        else
+          Valor := Valor + StringOfChar(' ',
+                            StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)) - Length(Valor));
+      end;
       FTemplate := StringReplace(FTemplate,
                                  RegExp.Substitute(TPL_EXP),
                                  Valor,

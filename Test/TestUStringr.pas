@@ -33,7 +33,8 @@ type
     procedure TestDataHora;
     procedure TestUpperCase;
     procedure TestLowerCase;
-    procedure TestParametroTruncado;
+    procedure TestStringMaiorQueLength;
+    procedure TestStringMenorQueLength;
     procedure TestCaracterEscape;
   end;
 
@@ -151,7 +152,7 @@ begin
   CheckEquals('Hello, WORLD!', ReturnValue);
 end;
 
-procedure TestTStringr.TestParametroTruncado;
+procedure TestTStringr.TestStringMaiorQueLength;
 var
   ReturnValue: string;
 begin
@@ -159,6 +160,16 @@ begin
   FStringr['name'] := 'world';
   ReturnValue := FStringr.Render;
   CheckEquals('Hello, wor!', ReturnValue);
+end;
+
+procedure TestTStringr.TestStringMenorQueLength;
+var
+  ReturnValue: string;
+begin
+  FStringr := TStringr.Create('Hello, {name length=10}!');
+  FStringr['name'] := 'world';
+  ReturnValue := FStringr.Render;
+  CheckEquals('Hello, world     !', ReturnValue);
 end;
 
 initialization
