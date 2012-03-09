@@ -20,7 +20,11 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_DependencyCheckOutputName>Stringr.exe</DCC_DependencyCheckOutputName>
+			<DCC_DcuOutput>.\temp</DCC_DcuOutput>
+			<DCC_ExeOutput>.\bin</DCC_ExeOutput>
+			<DCC_BplOutput>.\bin</DCC_BplOutput>
+			<DCC_DcpOutput>.\bin</DCC_DcpOutput>
+			<DCC_DependencyCheckOutputName>bin\Stringr.exe</DCC_DependencyCheckOutputName>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_Platform>x86</DCC_Platform>
@@ -98,6 +102,9 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
+					<Language>
+						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
+					</Language>
 				</Delphi.Personality>
 				<ModelSupport>False</ModelSupport>
 			</BorlandProject>
