@@ -47,7 +47,10 @@
 			</DelphiCompile>
 			<DCCReference Include="TestUStringr.pas"/>
 			<DCCReference Include="..\UStringr.pas"/>
-			<DCCReference Include="..\Utils\RegExpr.pas"/>
+			<DCCReference Include="TestAtributoLength.pas"/>
+			<DCCReference Include="TestAtributoCase.pas"/>
+			<DCCReference Include="TestAtributoFormat.pas"/>
+			<DCCReference Include="TestParser.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -101,9 +104,6 @@
 					<Source>
 						<Source Name="MainSource">StringrTests.dpr</Source>
 					</Source>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Test\</Language>
-					</Language>
 				</Delphi.Personality>
 				<UnitTesting>
 					<TestFramework>DUnit / Delphi Win32</TestFramework>

@@ -21,7 +21,10 @@ uses
   TextTestRunner,
   TestUStringr in 'TestUStringr.pas',
   UStringr in '..\UStringr.pas',
-  RegExpr in '..\Utils\RegExpr.pas';
+  TestAtributoLength in 'TestAtributoLength.pas',
+  TestAtributoCase in 'TestAtributoCase.pas',
+  TestAtributoFormat in 'TestAtributoFormat.pas',
+  TestParser in 'TestParser.pas';
 
 {$R *.RES}
 

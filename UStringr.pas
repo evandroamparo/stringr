@@ -3,20 +3,19 @@ unit UStringr;
 interface
 
 uses
-  Classes, RegExpr, Generics.Collections, Contnrs;
+  Classes, RegExpr, Generics.Collections, Contnrs, SysUtils;
 
 type
+  ETemplateError = class(Exception);
+
   TElemento = class abstract
   private
     FTexto: WideString;
     FPosicaoInicial: Integer;
-    FTamanho: Integer;
     procedure SetTexto(const Value: WideString);
     procedure SetPosicaoInicial(const Value: Integer);
-    procedure SetTamanho(const Value: Integer);
   public
     property PosicaoInicial: Integer read FPosicaoInicial write SetPosicaoInicial;
-    property Tamanho: Integer read FTamanho write SetTamanho;
     property Texto: WideString read FTexto write SetTexto;
     function ToString: WideString; reintroduce; virtual; abstract;
   end;
@@ -73,12 +72,10 @@ type
     FAtributos: TObjectList;
     procedure SetNome(const Value: String);
     procedure SetValor(const Value: WideString);
-    function GetAtributos(const Nome: WideString): TAtributo;
-    procedure SetAtributos(const Nome: WideString; Value: TAtributo);
   public
     property Nome: String read FNome write SetNome;
     property Valor: WideString read FValor write SetValor;
-    property Atributos[const Nome: WideString]: TAtributo read GetAtributos write SetAtributos;
+    procedure NovoAtributo(Atributo: TAtributo);
     function ToString: WideString; override;
 
     constructor Create;
@@ -88,9 +85,16 @@ type
   TCustomParser = class abstract
   private
     FTexto: WideString;
+    FFimTag: WideString;
+    FInicioTag: WideString;
     FContemElemento: Boolean;
+    procedure SetFimTag(const Value: WideString);
+    procedure SetInicioTag(const Value: WideString);
+    procedure SetContemElemento(const Value: Boolean);
   public
-    property ContemElemento: Boolean read FContemElemento;
+    property InicioTag: WideString read FInicioTag write SetInicioTag;
+    property FimTag: WideString read FFimTag write SetFimTag;
+    property ContemElemento: Boolean read FContemElemento write SetContemElemento;
     function ProximoElemento: TElemento; virtual; abstract;
 
     constructor Create(const Texto: WideString);
@@ -99,12 +103,49 @@ type
 
   TDefaultParser = class(TCustomParser)
   private
-    FTexto: WideString;
     RegEx: TRegExpr;
+    FIniciado: Boolean;
+    FTexto: WideString;
+    FPosicaoInicial: Integer;
+    FExpEncontrada: Boolean;
+    function GetContemElemento: Boolean;
+    function ExtraiAtributos(S: String): TStringList;
+
+    const INICIO_TAG = '{';
+    const FIM_TAG = '}';
+    const ER_TAG = INICIO_TAG + '(?gi)(\/?)(((\w+)\.)?(\w+))( (.+?))?' + FIM_TAG;
+    const TPL_EXP = '$0';
+    const TPL_LISTA_FIM = '$1';
+    const TPL_LISTA = '$2';
+    const TPL_LISTA_PARAM = '$4';
+    const TPL_PARAM = '$5';
+    const TPL_PARAM_ATR = '$7';
+    const TPL_LISTA_INICIO = '$7';
+
+    const ER_ATRIB = '(?gi)(\w+)=((''((\\''|[^''}])+)'')|([^} ]+))';
+    const TPL_ATR = '$1';
+    const TPL_VAL_ASPAS = '$4';
+    const TPL_VAL_SEM_ASPAS = '$6';
+
+    const PARAM_DATA = 'Date';
+    const PARAM_HORA = 'Time';
+    const PARAM_DATA_HORA = 'DateTime';
+
+    const ATR_CASE = 'case';
+    const ATR_VAL_UPPERCASE = 'upper';
+    const ATR_VAL_LOWERCASE = 'lower';
+    const	ATR_LENGTH = 'length';
+    const ATR_FORMAT = 'format';
+
+    const ESCAPE = '\';
+    const ASPAS = '''';
+
   public
+    property ContemElemento: Boolean read GetContemElemento;
     function ProximoElemento: TElemento; override;
 
-    constructor Create(const Texto: WideString);
+    constructor Create(const Texto: WideString;
+        InicioTag: WideString = INICIO_TAG; FimTag: WideString = FIM_TAG);
     destructor Destroy; override;
   end;
 
@@ -190,7 +231,7 @@ type
 implementation
 
 uses
-  Windows, SysUtils, StrUtils;
+  Windows, StrUtils;
 
 { TStringr }
 
@@ -322,11 +363,6 @@ begin
   FPosicaoInicial := Value;
 end;
 
-procedure TElemento.SetTamanho(const Value: Integer);
-begin
-  FTamanho := Value;
-end;
-
 procedure TElemento.SetTexto(const Value: WideString);
 begin
   FTexto := Value;
@@ -338,6 +374,7 @@ constructor TParametro.Create;
 begin
   inherited;
   FAtributos := TObjectList.Create;
+  FAtributos.OwnsObjects := True;
 end;
 
 destructor TParametro.Destroy;
@@ -346,38 +383,9 @@ begin
   inherited;
 end;
 
-function TParametro.GetAtributos(const Nome: WideString): TAtributo;
-var
-  i: Integer;
+procedure TParametro.NovoAtributo(Atributo: TAtributo);
 begin
-  for i := 0 to FAtributos.Count - 1 do
-    if (FAtributos[i] as TAtributo).Nome = Nome then
-    begin
-      Result := (FAtributos[i] as TAtributo);
-      Break;
-    end;
-
-  Result := nil;
-end;
-
-procedure TParametro.SetAtributos(const Nome: WideString; Value: TAtributo);
-var
-  i, iEncontrado: Integer;
-begin
-  iEncontrado := -1;
-
-  for i := 0 to FAtributos.Count - 1 do
-    if (FAtributos[i] as TAtributo).Nome = Nome then
-    begin
-      iEncontrado := i;
-      Break;
-    end;
-
-  if iEncontrado <> -1 then
-  begin
-    FAtributos[i].Free;
-    FAtributos[i] := Value;
-  end;
+  FAtributos.Add(Atributo);
 end;
 
 procedure TParametro.SetNome(const Value: String);
@@ -441,9 +449,9 @@ function TAtributoCase.Transformar(
 begin
   case Valor of
     csMaiusculas:
-      Result := AnsiUpperCase(ValorParametro);
+      Result := WideUpperCase(ValorParametro);
     csMinusculas:
-      Result := AnsiLowerCase(ValorParametro);
+      Result := WideLowerCase(ValorParametro);
     else
       Result := ValorParametro;
   end;
@@ -454,7 +462,14 @@ end;
 function TAtributoFormat.Transformar(
   const ValorParametro: TDateTime): WideString;
 begin
-  Result := FormatDateTime(Valor, ValorParametro);
+  if Trim(Valor) <> '' then
+    Result := FormatDateTime(Valor, ValorParametro)
+  else if ValorParametro = Trunc(ValorParametro) then // somente data
+    Result := DateToStr(ValorParametro)
+  else if ValorParametro = Frac(ValorParametro) then // somente hora
+    Result := TimeToStr(ValorParametro)
+  else
+    Result := DateTimeToStr(ValorParametro);
 end;
 
 { TTemplate }
@@ -516,10 +531,21 @@ end;
 
 { TParser }
 
-constructor TDefaultParser.Create(const Texto: WideString);
+constructor TDefaultParser.Create(const Texto: WideString;
+  InicioTag: WideString = INICIO_TAG; FimTag: WideString = FIM_TAG);
+var
+  ExpRegular: WideString;
 begin
-  inherited;
+  FTexto := Texto;
+  FPosicaoInicial := 1;
+  FIniciado := False;
+  FInicioTag := InicioTag;
+  FFimTag := FimTag;
   RegEx := TRegExpr.Create;
+  ExpRegular := StringReplace(ER_TAG, INICIO_TAG, FInicioTag, []);
+  ExpRegular := StringReplace(ExpRegular, FIM_TAG, FFimTag, []);
+  RegEx.Expression := ExpRegular;
+  RegEx.InputString := FTexto;
 end;
 
 destructor TDefaultParser.Destroy;
@@ -528,8 +554,173 @@ begin
   inherited;
 end;
 
-function TDefaultParser.ProximoElemento: TElemento;
+function TDefaultParser.ExtraiAtributos(S: String): TStringList;
+var
+  Re: TRegExpr;
+  Val: String;
 begin
+  Result := TStringList.Create;
+  Re := TRegExpr.Create;
+  Re.Expression := ER_ATRIB;
+  try
+    if Re.Exec(S) then
+    begin
+      repeat
+        Val := Re.Match[4];
+        if Val = '' then
+          Val := Re.Match[6];
+        Val := StringReplace(Val, ESCAPE + ASPAS, ASPAS, [rfReplaceAll]);
+        Result.Add(AnsiLowerCase(Re.Match[1]) + '=' + Val);
+      until not Re.ExecNext;
+    end;
+  finally
+    Re.Free;
+  end;
+end;
+
+function TDefaultParser.GetContemElemento: Boolean;
+begin
+  if not FIniciado then
+  begin
+    FExpEncontrada := RegEx.Exec(FTexto);
+    FIniciado := True;
+  end;
+
+  Result := FExpEncontrada or
+            (not FExpEncontrada and (FTexto <> ''));
+end;
+
+function TDefaultParser.ProximoElemento: TElemento;
+var
+  ListaAtributos: TStringList;
+  i: Integer;
+  Atributo: TAtributo;
+begin
+  if not ContemElemento then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  if (not FExpEncontrada and (Length(FTexto) > FPosicaoInicial)) then
+  begin
+    Result := TTexto.Create;
+    Result.Texto := Copy(FTexto, FPosicaoInicial, Length(FTexto) - FPosicaoInicial + 1);
+    Result.PosicaoInicial := FPosicaoInicial;
+    FPosicaoInicial := RegEx.MatchPos[0];
+  end
+  else if RegEx.MatchPos[0] <> FPosicaoInicial then
+  begin
+    Result := TTexto.Create;
+    Result.Texto := Copy(FTexto, FPosicaoInicial, RegEx.MatchPos[0] - FPosicaoInicial);
+    Result.PosicaoInicial := FPosicaoInicial;
+    FPosicaoInicial := RegEx.MatchPos[0];
+  end
+  else
+  begin
+    Result := TParametro.Create;
+    (Result as TParametro).Nome := RegEx.Match[5];
+    ListaAtributos := ExtraiAtributos(RegEx.Match[7]);
+    try
+      for i := 0 to ListaAtributos.Count - 1 do
+      begin
+        if WideCompareText(ListaAtributos.Names[i], ATR_CASE) = 0 then
+        begin
+          Atributo := TAtributoCase.Create;
+          Atributo.Nome := ATR_CASE;
+          if WideCompareText(ListaAtributos.ValueFromIndex[i], ATR_VAL_UPPERCASE) = 0 then
+            (Atributo as TAtributoCase).Valor := csMaiusculas
+          else if WideCompareText(ListaAtributos.ValueFromIndex[i], ATR_VAL_LOWERCASE) = 0 then
+            (Atributo as TAtributoCase).Valor := csMinusculas
+          else if ListaAtributos.ValueFromIndex[i] <> '' then
+            raise ETemplateError.CreateFmt(
+                'Parâmetro: %s. Valor inválido para o atributo %s.',
+                [RegEx.Match[0], ATR_CASE])
+          else
+            (Atributo as TAtributoCase).Valor := csNormal;
+          (Result as TParametro).NovoAtributo(Atributo);
+        end
+        else if WideCompareText(ListaAtributos.Names[i], ATR_LENGTH) = 0 then
+        begin
+          Atributo := TAtributoLength.Create;
+          try
+            Atributo.Nome := ATR_LENGTH;
+            (Atributo as TAtributoLength).Valor :=
+              StrToInt(ListaAtributos.ValueFromIndex[i]);
+            (Result as TParametro).NovoAtributo(Atributo);
+          except
+            on E: EConvertError do
+            begin
+              Atributo.Free;
+              raise ETemplateError.CreateFmt(
+                'Parâmetro: %s. Valor inválido para o atributo %s.',
+                [RegEx.Match[0], ATR_LENGTH]);
+            end;
+          end;
+        end
+        else if WideCompareText(ListaAtributos.Names[i], ATR_FORMAT) = 0 then
+        begin
+          Atributo := TAtributoFormat.Create;
+          Atributo.Nome := ATR_FORMAT;
+          Atributo.Valor := ListaAtributos.ValueFromIndex[i];
+          (Result as TParametro).NovoAtributo(Atributo);
+        end
+        else
+          raise ETemplateError.CreateFmt('Atributo inválido: %s', [ListaAtributos.Names[i]]);
+      end;
+    finally
+      ListaAtributos.Free;
+    end;
+
+    Result.Texto := RegEx.Match[0]; // extrair atributos
+    Result.PosicaoInicial := RegEx.MatchPos[0];
+    FPosicaoInicial := RegEx.MatchPos[0] + RegEx.MatchLen[0];
+  end;
+
+  FExpEncontrada := RegEx.ExecPos(FPosicaoInicial);
+//
+//  if AnsiCompareText(Nome, DATE_PARAM) = 0 then
+//  begin
+//    if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+//      Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Date)
+//    else
+//      Valor := DateToStr(Date);
+//  end
+//  else if AnsiCompareText(Nome, TIME_PARAM) = 0 then
+//  begin
+//    if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+//      Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Time)
+//    else
+//      Valor := TimeToStr(Time);
+//  end
+//  else if AnsiCompareText(Nome, DATE_TIME_PARAM) = 0 then
+//  begin
+//    if ListaAtributos.Values[ATTR_FORMAT] <> '' then
+//      Valor := FormatDateTime(ListaAtributos.Values[ATTR_FORMAT], Now)
+//    else
+//      Valor := DateTimeToStr(Now);
+//  end
+//  else
+//    Valor := FParams.Values[Nome];
+//
+//  if ListaAtributos.Values[ATTR_CASE] = ATTR_VAL_UPPERCASE then
+//    Valor := AnsiUpperCase(Valor)
+//  else if ListaAtributos.Values[ATTR_CASE] = ATTR_VAL_LOWERCASE then
+//    Valor := AnsiLowerCase(Valor);
+//
+//  if ListaAtributos.Values[ATTR_LENGTH] <> '' then
+//  begin
+//    if Length(Valor) > StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)) then
+//      Valor := Copy(Valor, 1,
+//                  StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)))
+//    else
+//      Valor := Valor + StringOfChar(' ',
+//                        StrToIntDef(ListaAtributos.Values[ATTR_LENGTH], Length(Valor)) - Length(Valor));
+//  end;
+//  FTemplate := StringReplace(FTemplate,
+//                             RegExp.Substitute(TPL_EXP),
+//                             Valor,
+//                             [rfIgnoreCase]);
 
 end;
 
@@ -544,6 +735,21 @@ destructor TCustomParser.Destroy;
 begin
 
   inherited;
+end;
+
+procedure TCustomParser.SetContemElemento(const Value: Boolean);
+begin
+  FContemElemento := Value;
+end;
+
+procedure TCustomParser.SetFimTag(const Value: WideString);
+begin
+  FFimTag := Value;
+end;
+
+procedure TCustomParser.SetInicioTag(const Value: WideString);
+begin
+  FInicioTag := Value;
 end;
 
 end.
