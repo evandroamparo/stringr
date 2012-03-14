@@ -21,8 +21,6 @@ type
   end;
 
   TTexto = class(TElemento)
-  private
-    FTexto: WideString;
   public
     function ToString: WideString; override;
   end;
@@ -607,7 +605,7 @@ begin
     Result := TTexto.Create;
     Result.Texto := Copy(FTexto, FPosicaoInicial, Length(FTexto) - FPosicaoInicial + 1);
     Result.PosicaoInicial := FPosicaoInicial;
-    FPosicaoInicial := RegEx.MatchPos[0];
+    FPosicaoInicial := Length(FTexto) + 1;
   end
   else if RegEx.MatchPos[0] <> FPosicaoInicial then
   begin

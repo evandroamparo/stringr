@@ -37,7 +37,6 @@ implementation
 procedure TestTAtributoFormat.SetUp;
 begin
   FAtributoFormat := TAtributoFormat.Create;
-  ReportMemoryLeaksOnShutdown := DebugHook <> 0;
 end;
 
 procedure TestTAtributoFormat.TearDown;
