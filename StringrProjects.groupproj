@@ -3,7 +3,7 @@
 			<ProjectGuid>{C1DB6017-3F32-4E4D-9946-3790E8414BFD}</ProjectGuid>
 		</PropertyGroup>
 		<ItemGroup>
-			<Projects Include="Stringr.dproj">
+			<Projects Include="Stringr2009.dproj">
 				<Dependencies/>
 			</Projects>
 			<Projects Include="Test\StringrTests.dproj">
@@ -20,14 +20,14 @@
 				<Default.Personality/>
 			</BorlandProject>
 		</ProjectExtensions>
-		<Target Name="Stringr">
-			<MSBuild Projects="Stringr.dproj"/>
+		<Target Name="Stringr2009">
+			<MSBuild Projects="Stringr2009.dproj"/>
 		</Target>
-		<Target Name="Stringr:Clean">
-			<MSBuild Targets="Clean" Projects="Stringr.dproj"/>
+		<Target Name="Stringr2009:Clean">
+			<MSBuild Targets="Clean" Projects="Stringr2009.dproj"/>
 		</Target>
-		<Target Name="Stringr:Make">
-			<MSBuild Targets="Make" Projects="Stringr.dproj"/>
+		<Target Name="Stringr2009:Make">
+			<MSBuild Targets="Make" Projects="Stringr2009.dproj"/>
 		</Target>
 		<Target Name="StringrTests">
 			<MSBuild Projects="Test\StringrTests.dproj"/>
@@ -48,13 +48,13 @@
 			<MSBuild Targets="Make" Projects="Demo\StringrDemo.dproj"/>
 		</Target>
 		<Target Name="Build">
-			<CallTarget Targets="Stringr;StringrTests;StringrDemo"/>
+			<CallTarget Targets="Stringr2009;StringrTests;StringrDemo"/>
 		</Target>
 		<Target Name="Clean">
-			<CallTarget Targets="Stringr:Clean;StringrTests:Clean;StringrDemo:Clean"/>
+			<CallTarget Targets="Stringr2009:Clean;StringrTests:Clean;StringrDemo:Clean"/>
 		</Target>
 		<Target Name="Make">
-			<CallTarget Targets="Stringr:Make;StringrTests:Make;StringrDemo:Make"/>
+			<CallTarget Targets="Stringr2009:Make;StringrTests:Make;StringrDemo:Make"/>
 		</Target>
 		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 	</Project>

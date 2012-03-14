@@ -1,8 +1,8 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{565F2308-3856-4D93-B3A8-12504AEDF80E}</ProjectGuid>
+			<ProjectGuid>{D2EECC1C-9A08-466F-A206-181569F580AE}</ProjectGuid>
+			<MainSource>Stringr2009.dpk</MainSource>
 			<ProjectVersion>12.0</ProjectVersion>
-			<MainSource>Stringr.dpr</MainSource>
 			<Config Condition="'$(Config)'==''">Debug</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 		</PropertyGroup>
@@ -21,16 +21,19 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_DcuOutput>.\temp</DCC_DcuOutput>
-			<DCC_ExeOutput>.\bin</DCC_ExeOutput>
+			<DesignOnlyPackage>false</DesignOnlyPackage>
 			<DCC_BplOutput>.\bin</DCC_BplOutput>
 			<DCC_DcpOutput>.\bin</DCC_DcpOutput>
-			<DCC_DependencyCheckOutputName>bin\Stringr.exe</DCC_DependencyCheckOutputName>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<GenPackage>true</GenPackage>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_Platform>x86</DCC_Platform>
-			<DCC_E>false</DCC_E>
+			<DCC_DependencyCheckOutputName>bin\Stringr2009.bpl</DCC_DependencyCheckOutputName>
 			<DCC_N>false</DCC_N>
 			<DCC_S>false</DCC_S>
+			<GenDll>true</GenDll>
+			<DCC_E>false</DCC_E>
 			<DCC_F>false</DCC_F>
 			<DCC_K>false</DCC_K>
 		</PropertyGroup>
@@ -44,11 +47,11 @@
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="Stringr.dpr">
+			<DelphiCompile Include="Stringr2009.dpk">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
+			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="UStringr.pas"/>
-			<DCCReference Include="Utils\RegExpr.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -64,11 +67,11 @@
 		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
 		<ProjectExtensions>
 			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
-			<Borland.ProjectType/>
+			<Borland.ProjectType>Package</Borland.ProjectType>
 			<BorlandProject>
 				<Delphi.Personality>
 					<Source>
-						<Source Name="MainSource">Stringr.dpr</Source>
+						<Source Name="MainSource">Stringr2009.dpk</Source>
 					</Source>
 					<Parameters>
 						<Parameters Name="UseLauncher">False</Parameters>
@@ -76,7 +79,7 @@
 						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 					</Parameters>
 					<VersionInfo>
-						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
@@ -102,11 +105,7 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
-					</Language>
 				</Delphi.Personality>
-				<ModelSupport>False</ModelSupport>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
