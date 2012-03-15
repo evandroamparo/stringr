@@ -104,6 +104,9 @@
 					<Source>
 						<Source Name="MainSource">StringrTests.dpr</Source>
 					</Source>
+					<Language>
+						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Test\</Language>
+					</Language>
 				</Delphi.Personality>
 				<UnitTesting>
 					<TestFramework>DUnit / Delphi Win32</TestFramework>

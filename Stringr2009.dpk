@@ -28,6 +28,17 @@ requires
   rtl;
 
 contains
-  UStringr in 'UStringr.pas';
+  UStringr in 'UStringr.pas',
+  RegExpr in 'Utils\RegExpr.pas',
+  UElemento in 'UElemento.pas',
+  UTexto in 'UTexto.pas',
+  UAtributo in 'UAtributo.pas',
+  UAtributoLength in 'UAtributoLength.pas',
+  UAtributoCase in 'UAtributoCase.pas',
+  UAtributoFormat in 'UAtributoFormat.pas',
+  UParametro in 'UParametro.pas',
+  UCustomParser in 'UCustomParser.pas',
+  UDefaultParser in 'UDefaultParser.pas',
+  UListaTemplate in 'UListaTemplate.pas';
 
 end.
