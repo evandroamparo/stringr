@@ -101,9 +101,6 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Demo\</Language>
-					</Language>
 				</Delphi.Personality>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>

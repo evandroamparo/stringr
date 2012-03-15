@@ -52,6 +52,17 @@
 			</DelphiCompile>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="UStringr.pas"/>
+			<DCCReference Include="Utils\RegExpr.pas"/>
+			<DCCReference Include="UElemento.pas"/>
+			<DCCReference Include="UTexto.pas"/>
+			<DCCReference Include="UAtributo.pas"/>
+			<DCCReference Include="UAtributoLength.pas"/>
+			<DCCReference Include="UAtributoCase.pas"/>
+			<DCCReference Include="UAtributoFormat.pas"/>
+			<DCCReference Include="UParametro.pas"/>
+			<DCCReference Include="UCustomParser.pas"/>
+			<DCCReference Include="UDefaultParser.pas"/>
+			<DCCReference Include="UListaTemplate.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -94,17 +105,24 @@
 						<VersionInfo Name="CodePage">1252</VersionInfo>
 					</VersionInfo>
 					<VersionInfoKeys>
-						<VersionInfoKeys Name="CompanyName"/>
-						<VersionInfoKeys Name="FileDescription"/>
+						<VersionInfoKeys Name="CompanyName">Evandro da Silva Amparo</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">Engine para processamento de templates de texto</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
-						<VersionInfoKeys Name="InternalName"/>
-						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="InternalName">TStringr</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">(c) 2012 Evandro da Silva Amparo</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
-						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductName">TStringr</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDS)\bin\dcloffice2k120.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDS)\bin\dclofficexp120.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+					</Excluded_Packages>
+					<Language>
+						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\</Language>
+					</Language>
 				</Delphi.Personality>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
