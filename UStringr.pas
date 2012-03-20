@@ -3,27 +3,28 @@ unit UStringr;
 interface
 
 uses
-  Classes, RegExpr, Generics.Collections, Contnrs, SysUtils, UElemento;
+  RegExpr, Contnrs, SysUtils, UElemento, Classes, UCustomParser, UTexto;
 
 type
   ETemplateError = class(Exception);
 
   TStringr = class
   private
-    FElementos: TObjectList;
+    FParametros: TStringList;
     FTexto: WideString;
-    function GetElementos(const Indice: Integer): TElemento;
-    procedure SetElementos(const Indice: Integer; const Value: TElemento);
+    FParser: ICustomParser;
     procedure SetTexto(const Value: WideString);
+    function GetParametros(const Nome: WideString): WideString;
+    procedure SetParametros(const Nome, Valor: WideString);
+    procedure SetParser(const Value: ICustomParser);
+    procedure CheckParser(Parser: ICustomParser);
   public
+    property Parser: ICustomParser read FParser write SetParser;
     property Texto: WideString read FTexto write SetTexto;
-    property Elementos[const Indice: Integer]: TElemento read GetElementos write SetElementos;
-    procedure NovoElemento(Elemento: TElemento);
-    procedure RemoveElemento(const Indice: Integer); overload;
-    procedure RemoveElemento(Elemento: TElemento); overload;
+    property Parametros[const Nome: WideString]: WideString read GetParametros write SetParametros; default;
     function ToString: WideString; reintroduce;
 
-    constructor Create;
+    constructor Create(Parser: ICustomParser); overload;
     destructor Destroy; override;
   end;
 
@@ -31,53 +32,49 @@ type
 implementation
 
 uses
-  Windows, StrUtils;
+  Windows, StrUtils, UParametro;
 
 { TTemplate }
 
-constructor TStringr.Create;
+procedure TStringr.CheckParser(Parser: ICustomParser);
 begin
-  FElementos := TObjectList.Create;
+  if not Assigned(Parser) then
+    raise ETemplateError.Create('Parser não definido.');
+end;
+
+constructor TStringr.Create(Parser: ICustomParser);
+begin
+  CheckParser(Parser);
+  FParser := Parser;
+  FParametros := TStringList.Create;
 end;
 
 destructor TStringr.Destroy;
 begin
-  FElementos.Free;
+  FParametros.Free;
   inherited;
 end;
 
-function TStringr.GetElementos(const Indice: Integer): TElemento;
+function TStringr.GetParametros(const Nome: WideString): WideString;
 begin
-  if not (Indice in [0..FElementos.Count - 1]) then
-    raise ERangeError.CreateFmt('Índice do elemento fora do intervalo (%d)', [Indice]);
-
-  Result := FElementos[Indice] as TElemento;
+  Result := FParametros.Values[WideLowerCase(Nome)];
 end;
 
-procedure TStringr.NovoElemento(Elemento: TElemento);
+procedure TStringr.SetParametros(const Nome, Valor: WideString);
+var
+  NovoNome: WideString;
 begin
-  FElementos.Add(Elemento);
+  NovoNome := WideLowerCase(Nome);
+
+  if (NovoNome <> 'date') and
+     (NovoNome <> 'time') and
+     (NovoNome <> 'datetime') then
+    FParametros.Values[NovoNome] := Valor;
 end;
 
-procedure TStringr.RemoveElemento(Elemento: TElemento);
+procedure TStringr.SetParser(const Value: ICustomParser);
 begin
-  FElementos.Remove(Elemento);
-end;
-
-procedure TStringr.RemoveElemento(const Indice: Integer);
-begin
-  if not (Indice in [0..FElementos.Count - 1]) then
-    raise ERangeError.CreateFmt('Índice do elemento fora do intervalo(%d)', [Indice]);
-
-  FElementos.Delete(Indice);
-end;
-
-procedure TStringr.SetElementos(const Indice: Integer; const Value: TElemento);
-begin
-  if not (Indice in [0..FElementos.Count - 1]) then
-    raise ERangeError.CreateFmt('Índice do elemento fora do intervalo(%d)', [Indice]);
-
-  FElementos[Indice] := Value;
+  FParser := Value;
 end;
 
 procedure TStringr.SetTexto(const Value: WideString);
@@ -86,8 +83,27 @@ begin
 end;
 
 function TStringr.ToString: WideString;
+var
+  Elemento: TElemento;
 begin
+  CheckParser(FParser);
 
+  Result := '';
+
+  FParser.Inicializa(FTexto);
+
+  while FParser.ContemElemento do
+  begin
+    Elemento := FParser.ProximoElemento;
+    if Elemento is TTexto then
+      Result := Result + Elemento.ToString
+    else if Elemento is TParametro then
+    begin
+      (Elemento as TParametro).Valor :=
+        FParametros.Values[WideLowerCase((Elemento as TParametro).Nome)];
+      Result := Result + Elemento.ToString;
+    end;
+  end;
 end;
 
 end.

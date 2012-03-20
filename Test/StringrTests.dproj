@@ -20,6 +20,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_DcuOutput>.\temp</DCC_DcuOutput>
 			<DCC_UnitSearchPath>$(BDS)\Source\DUnit\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DependencyCheckOutputName>StringrTests.exe</DCC_DependencyCheckOutputName>
 			<DCC_Define>_CONSOLE_TESTRUNNER;$(DCC_Define)</DCC_Define>
@@ -45,12 +46,17 @@
 			<DelphiCompile Include="StringrTests.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="TestUStringr.pas"/>
+			<DCCReference Include="TestStringr.pas"/>
 			<DCCReference Include="..\UStringr.pas"/>
 			<DCCReference Include="TestAtributoLength.pas"/>
 			<DCCReference Include="TestAtributoCase.pas"/>
 			<DCCReference Include="TestAtributoFormat.pas"/>
 			<DCCReference Include="TestParser.pas"/>
+			<DCCReference Include="..\UDefaultParser.pas"/>
+			<DCCReference Include="..\UAtributoLength.pas"/>
+			<DCCReference Include="..\UAtributoCase.pas"/>
+			<DCCReference Include="..\UAtributoFormat.pas"/>
+			<DCCReference Include="..\UParametro.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

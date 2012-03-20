@@ -19,12 +19,17 @@ uses
   TestFramework,
   GUITestRunner,
   TextTestRunner,
-  TestUStringr in 'TestUStringr.pas',
+  TestStringr in 'TestStringr.pas',
   UStringr in '..\UStringr.pas',
   TestAtributoLength in 'TestAtributoLength.pas',
   TestAtributoCase in 'TestAtributoCase.pas',
   TestAtributoFormat in 'TestAtributoFormat.pas',
-  TestParser in 'TestParser.pas';
+  TestParser in 'TestParser.pas',
+  UDefaultParser in '..\UDefaultParser.pas',
+  UAtributoLength in '..\UAtributoLength.pas',
+  UAtributoCase in '..\UAtributoCase.pas',
+  UAtributoFormat in '..\UAtributoFormat.pas',
+  UParametro in '..\UParametro.pas';
 
 {$R *.RES}
 

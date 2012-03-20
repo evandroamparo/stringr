@@ -12,7 +12,8 @@ unit TestAtributoFormat;
 interface
 
 uses
-  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr;
+  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr,
+  UAtributoFormat;
 
 type
   // Test methods for class TAtributoFormat
