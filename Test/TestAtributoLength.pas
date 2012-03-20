@@ -12,7 +12,8 @@ unit TestAtributoLength;
 interface
 
 uses
-  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr;
+  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr,
+  UAtributoLength;
 
 type
   // Test methods for class TAtributoLength

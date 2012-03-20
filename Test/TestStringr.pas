@@ -1,4 +1,4 @@
-unit TestUStringr;
+unit TestStringr;
 {
 
   Delphi DUnit Test Case
@@ -12,7 +12,7 @@ unit TestUStringr;
 interface
 
 uses
-  TestFramework, UStringr;
+  TestFramework, UStringr, UDefaultParser;
 
 type
   // Test methods for class TStringr
@@ -20,10 +20,12 @@ type
   TestTStringr = class(TTestCase)
   strict private
     FStringr: TStringr;
+    FParser: TDefaultParser;
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestParserNaoPodeSerNulo;
     procedure TestParametroSemRepeticao;
     procedure TestParametroComRepeticao;
     procedure TestDataSemFormato;
@@ -43,23 +45,41 @@ implementation
 uses
   SysUtils;
 
+procedure TestTStringr.SetUp;
+begin
+  FParser := TDefaultParser.Create;
+end;
+
+procedure TestTStringr.TearDown;
+begin
+//  FParser.Free;
+end;
+
 procedure TestTStringr.TestHoraComFormato;
 var
   ReturnValue: string;
   Formato: string;
 begin
   Formato := 'h "h" m "m" s "s"';
-  FStringr := TStringr.Create('{Time format=''' + Formato + '''}');
-  ReturnValue := FStringr.Render;
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{Time format=''' + Formato + '''}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(FormatDateTime(Formato, Time), ReturnValue);
+end;
+
+procedure TestTStringr.TestParserNaoPodeSerNulo;
+begin
+  ExpectedException := ETemplateError;
+  FStringr := TStringr.Create(nil);
 end;
 
 procedure TestTStringr.TestHoraSemFormato;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('{Time}');
-  ReturnValue := FStringr.Render;
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{Time}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(TimeToStr(Time), ReturnValue);
 end;
 
@@ -67,18 +87,11 @@ procedure TestTStringr.TestLowerCase;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name case=lower}!');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name case=lower}!';
   FStringr['name'] := 'WORLD';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, world!', ReturnValue);
-end;
-
-procedure TestTStringr.SetUp;
-begin
-end;
-
-procedure TestTStringr.TearDown;
-begin
 end;
 
 procedure TestTStringr.TestCaracterEscape;
@@ -88,8 +101,9 @@ var
 begin
   FormatoOriginal := 'dd \''de\'' mmmm \''de\'' yyyy';
   FormatoEquivalente := 'dd ''de'' mmmm ''de'' yyyy';
-  FStringr := TStringr.Create('{Date format=''' + FormatoOriginal + '''}');
-  ReturnValue := FStringr.Render;
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{Date format=''' + FormatoOriginal + '''}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(FormatDateTime(FormatoEquivalente, Date), ReturnValue);
 end;
 
@@ -98,9 +112,10 @@ var
   ReturnValue: string;
   Formato: string;
 begin
-  Formato := 'dd-mm-yyyy';
-  FStringr := TStringr.Create('{Date format=' + Formato + '}');
-  ReturnValue := FStringr.Render;
+  Formato := 'dd mm yyyy';
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{Date format=''' + Formato + '''}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(FormatDateTime(Formato, Date), ReturnValue);
 end;
 
@@ -108,8 +123,9 @@ procedure TestTStringr.TestDataSemFormato;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('{Date}');
-  ReturnValue := FStringr.Render;
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{Date}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(DateToStr(Date), ReturnValue);
 end;
 
@@ -117,8 +133,9 @@ procedure TestTStringr.TestDataHora;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('{DateTime}');
-  ReturnValue := FStringr.Render;
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := '{DateTime}';
+  ReturnValue := FStringr.ToString;
   CheckEquals(DateTimeToStr(Now), ReturnValue);
 end;
 
@@ -126,9 +143,10 @@ procedure TestTStringr.TestParametroComRepeticao;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name}! How are you, {name}?');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name}! How are you, {name}?';
   FStringr['name'] := 'world';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, world! How are you, world?', ReturnValue);
 end;
 
@@ -136,9 +154,10 @@ procedure TestTStringr.TestParametroSemRepeticao;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name}!');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name}!';
   FStringr['name'] := 'world';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, world!', ReturnValue);
 end;
 
@@ -146,9 +165,10 @@ procedure TestTStringr.TestUpperCase;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name case=upper}!');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name case=upper}!';
   FStringr['name'] := 'world';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, WORLD!', ReturnValue);
 end;
 
@@ -156,9 +176,10 @@ procedure TestTStringr.TestStringMaiorQueLength;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name length=3}!');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name length=3}!';
   FStringr['name'] := 'world';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, wor!', ReturnValue);
 end;
 
@@ -166,9 +187,10 @@ procedure TestTStringr.TestStringMenorQueLength;
 var
   ReturnValue: string;
 begin
-  FStringr := TStringr.Create('Hello, {name length=10}!');
+  FStringr := TStringr.Create(FParser);
+  FStringr.Texto := 'Hello, {name length=10}!';
   FStringr['name'] := 'world';
-  ReturnValue := FStringr.Render;
+  ReturnValue := FStringr.ToString;
   CheckEquals('Hello, world     !', ReturnValue);
 end;
 

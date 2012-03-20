@@ -12,7 +12,8 @@ unit TestAtributoCase;
 interface
 
 uses
-  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr;
+  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr,
+  UAtributoCase;
 
 type
   // Test methods for class TAtributoCase

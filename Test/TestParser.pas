@@ -12,7 +12,8 @@ unit TestParser;
 interface
 
 uses
-  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr;
+  TestFramework, SysUtils, Generics.Collections, Classes, Contnrs, UStringr, RegExpr,
+  UDefaultParser;
 
 type
   // Test methods for class TDefaultParser
@@ -34,120 +35,108 @@ type
 
 implementation
 
+uses
+  UElemento, UParametro, UTexto;
+
 procedure TestTDefaultParser.TestParametroSeguidoDeTexto;
 var
   ReturnValue: TElemento;
 begin
-  FDefaultParser := TDefaultParser.Create('{parametro} Este é um texto.');
-  try
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  FDefaultParser.Texto := '{parametro} Este é um texto.';
 
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
-    CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('{parametro}', ReturnValue.Texto, 'Texto incorreto.');
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
 
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TTexto, 'Elemento não é parâmetro.');
-    CheckEquals(12, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString(' Este é um texto.', ReturnValue.Texto, 'Texto incorreto.');
-  finally
-    FDefaultParser.Free;
-  end;
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
+  CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('{parametro}', ReturnValue.Texto, 'Texto incorreto.');
+
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TTexto, 'Elemento não é parâmetro.');
+  CheckEquals(12, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString(' Este é um texto.', ReturnValue.Texto, 'Texto incorreto.');
 end;
 
 procedure TestTDefaultParser.SetUp;
 begin
+  FDefaultParser := TDefaultParser.Create;
 end;
 
 procedure TestTDefaultParser.TearDown;
 begin
+  FDefaultParser.Free;
 end;
 
 procedure TestTDefaultParser.TestDelimitadorPesonalizado;
 var
   ReturnValue: TElemento;
 begin
-  FDefaultParser := TDefaultParser.Create('$teste$', '\$', '\$');
-  try
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  FDefaultParser.Texto := '$teste$';
+  FDefaultParser.DelimitadorInicio := '\$';
+  FDefaultParser.DelimitadorFim := '\$';
 
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
-    CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('$teste$', ReturnValue.Texto, 'Texto incorreto.');
-  finally
-    FDefaultParser.Free;
-  end;
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
+  CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('$teste$', ReturnValue.Texto, 'Texto incorreto.');
 end;
 
 procedure TestTDefaultParser.TestTemplateComParametros;
 var
   ReturnValue: TElemento;
 begin
-  FDefaultParser := TDefaultParser.Create('{teste}');
-  try
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  FDefaultParser.Texto := '{teste}';
 
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
-    CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('{teste}', ReturnValue.Texto, 'Texto incorreto.');
-  finally
-    FDefaultParser.Free;
-  end;
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
+  CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('{teste}', ReturnValue.Texto, 'Texto incorreto.');
 end;
 
 procedure TestTDefaultParser.TestTemplateSemParametros;
 var
   ReturnValue: TElemento;
 begin
-  FDefaultParser := TDefaultParser.Create('teste');
-  try
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  FDefaultParser.Texto := 'teste';
 
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TTexto, 'Elemento não é texto.');
-    CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('teste', ReturnValue.ToString, 'Texto incorreto.');
-  finally
-    FDefaultParser.Free;
-  end;
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TTexto, 'Elemento não é texto.');
+  CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('teste', ReturnValue.ToString, 'Texto incorreto.');
 end;
 
 procedure TestTDefaultParser.TestTemplateVazio;
 begin
-  FDefaultParser := TDefaultParser.Create('');
-  try
-    CheckFalse(FDefaultParser.ContemElemento, 'Template vazio contém elemento.');
-    CheckNull(FDefaultParser.ProximoElemento, 'Próximo elemento não nulo.');
-  finally
-    FDefaultParser.Free;
-  end;
+  FDefaultParser.Texto := '';
+  CheckFalse(FDefaultParser.ContemElemento, 'Template vazio contém elemento.');
+  CheckNull(FDefaultParser.ProximoElemento, 'Próximo elemento não nulo.');
 end;
 
 procedure TestTDefaultParser.TestTextoSeguidoDeParametro;
 var
   ReturnValue: TElemento;
 begin
-  FDefaultParser := TDefaultParser.Create('Este é um texto. {parametro}');
-  try
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  FDefaultParser.Texto := 'Este é um texto. {parametro}';
 
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TTexto, 'Elemento não é texto.');
-    CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('Este é um texto. ', ReturnValue.Texto, 'Texto incorreto.');
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
 
-    CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
-    ReturnValue := FDefaultParser.ProximoElemento;
-    CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
-    CheckEquals(18, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
-    CheckEqualsWideString('{parametro}', ReturnValue.Texto, 'Texto incorreto.');
-  finally
-    FDefaultParser.Free;
-  end;
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TTexto, 'Elemento não é texto.');
+  CheckEquals(1, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('Este é um texto. ', ReturnValue.Texto, 'Texto incorreto.');
+
+  CheckTrue(FDefaultParser.ContemElemento, 'Template não contém elemento.');
+  ReturnValue := FDefaultParser.ProximoElemento;
+  CheckIs(ReturnValue, TParametro, 'Elemento não é parâmetro.');
+  CheckEquals(18, ReturnValue.PosicaoInicial, 'Posição inicial incorreta.');
+  CheckEqualsWideString('{parametro}', ReturnValue.Texto, 'Texto incorreto.');
 end;
 
 initialization

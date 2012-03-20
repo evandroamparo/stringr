@@ -25,6 +25,8 @@ type
 
 implementation
 
+uses UAtributoCase, UAtributoFormat, UAtributoLength, SysUtils;
+
 { TParametro }
 
 constructor TParametro.Create;
@@ -42,7 +44,10 @@ end;
 
 procedure TParametro.NovoAtributo(Atributo: TAtributo);
 begin
-  FAtributos.Add(Atributo);
+  if (Atributo is TAtributoFormat) then
+    FAtributos.Insert(0, Atributo)
+  else
+    FAtributos.Add(Atributo);
 end;
 
 procedure TParametro.SetNome(const Value: String);
@@ -59,11 +64,32 @@ function TParametro.ToString: WideString;
 var
   i: Integer;
 begin
-  Result := Valor;
+  if (LowerCase(Nome) = 'date') then
+    FValor := DateToStr(Date)
+  else if (LowerCase(Nome) = 'time') then
+    FValor := TimeToStr(Time)
+  else if (LowerCase(Nome) = 'datetime') then
+    FValor := DateTimeToStr(Now);
 
-  if Valor <> '' then
+  Result := FValor;
+
+//  if Valor <> '' then
     for i := 0 to FAtributos.Count - 1 do
-      Result := TAtributo(FAtributos[i]).Transformar(Result);
+    begin
+      if (FAtributos[i] is TAtributoFormat) then
+      begin
+        if (LowerCase(Nome) = 'date') then
+          Result := (FAtributos[i] as TAtributoFormat).Transformar(Date)
+        else if (LowerCase(Nome) = 'time') then
+          Result := (FAtributos[i] as TAtributoFormat).Transformar(Time)
+        else if (LowerCase(Nome) = 'datetime') then
+          Result := (FAtributos[i] as TAtributoFormat).Transformar(Now);
+      end
+      else if (FAtributos[i] is TAtributoLength) then
+        Result := (FAtributos[i] as TAtributoLength).Transformar(Result)
+      else if (FAtributos[i] is TAtributoCase) then
+        Result := (FAtributos[i] as TAtributoCase).Transformar(Result);
+    end;
 end;
 
 end.
