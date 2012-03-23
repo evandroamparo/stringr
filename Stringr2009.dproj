@@ -62,7 +62,6 @@
 			<DCCReference Include="UParametro.pas"/>
 			<DCCReference Include="UCustomParser.pas"/>
 			<DCCReference Include="UDefaultParser.pas"/>
-			<DCCReference Include="UListaTemplate.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

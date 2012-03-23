@@ -3,7 +3,7 @@ unit UDefaultParser;
 interface
 
 uses
-  UStringr, RegExpr, Classes, UCustomParser, UElemento;
+  RegExpr, Classes, UCustomParser, UElemento;
 
 type
   TDefaultParser = class(TInterfacedObject, ICustomParser)
