@@ -33,7 +33,8 @@ var
 
 implementation
 
-uses UStringr;
+uses
+  UStringr, UDefaultParser;
 
 {$R *.dfm}
 
@@ -51,15 +52,19 @@ end;
 procedure TFMain.Gerar1Click(Sender: TObject);
 var
   Template: TStringr;
+  Parser: TDefaultParser;
   i: Integer;
 begin
-  Template := TStringr.Create(MemoTemplate.Text);
+  Parser := TDefaultParser.Create;
+  Template := TStringr.Create(Parser);
+  Template.Texto := MemoTemplate.Text;
   try
     for i := 0 to MemoParametros.Lines.Count - 1 do
-      Template.Params[MemoParametros.Lines.Names[i]] := MemoParametros.Lines.ValueFromIndex[i];
-      MemoSaida.Text := Template.Render;
+      Template[MemoParametros.Lines.Names[i]] := MemoParametros.Lines.ValueFromIndex[i];
+      MemoSaida.Text := Template.ToString;
   finally
     Template.Free;
+    Parser.Free;
   end;
 end;
 

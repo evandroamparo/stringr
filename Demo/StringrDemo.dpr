@@ -2,9 +2,7 @@ program StringrDemo;
 
 uses
   Forms,
-  UMain in 'UMain.pas' {FMain},
-  UStringr in '..\UStringr.pas',
-  RegExpr in '..\Utils\RegExpr.pas';
+  UMain in 'UMain.pas' {FMain};
 
 {$R *.res}
 

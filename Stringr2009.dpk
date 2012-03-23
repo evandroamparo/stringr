@@ -38,7 +38,6 @@ contains
   UAtributoFormat in 'UAtributoFormat.pas',
   UParametro in 'UParametro.pas',
   UCustomParser in 'UCustomParser.pas',
-  UDefaultParser in 'UDefaultParser.pas',
-  UListaTemplate in 'UListaTemplate.pas';
+  UDefaultParser in 'UDefaultParser.pas';
 
 end.
