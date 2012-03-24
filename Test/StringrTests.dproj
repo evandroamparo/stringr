@@ -20,7 +20,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_DcuOutput>.\temp</DCC_DcuOutput>
+			<DCC_DcuOutput>..\temp</DCC_DcuOutput>
 			<DCC_UnitSearchPath>$(BDS)\Source\DUnit\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DependencyCheckOutputName>StringrTests.exe</DCC_DependencyCheckOutputName>
 			<DCC_Define>_CONSOLE_TESTRUNNER;$(DCC_Define)</DCC_Define>
@@ -47,16 +47,21 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="TestStringr.pas"/>
-			<DCCReference Include="..\UStringr.pas"/>
 			<DCCReference Include="TestAtributoLength.pas"/>
 			<DCCReference Include="TestAtributoCase.pas"/>
 			<DCCReference Include="TestAtributoFormat.pas"/>
 			<DCCReference Include="TestParser.pas"/>
-			<DCCReference Include="..\UDefaultParser.pas"/>
-			<DCCReference Include="..\UAtributoLength.pas"/>
-			<DCCReference Include="..\UAtributoCase.pas"/>
-			<DCCReference Include="..\UAtributoFormat.pas"/>
-			<DCCReference Include="..\UParametro.pas"/>
+			<DCCReference Include="..\src\UAtributoCase.pas"/>
+			<DCCReference Include="..\src\UAtributoFormat.pas"/>
+			<DCCReference Include="..\src\UAtributoLength.pas"/>
+			<DCCReference Include="..\src\UDefaultParser.pas"/>
+			<DCCReference Include="..\src\UParametro.pas"/>
+			<DCCReference Include="..\src\UStringr.pas"/>
+			<DCCReference Include="..\src\Utils\RegExpr.pas"/>
+			<DCCReference Include="..\src\UCustomParser.pas"/>
+			<DCCReference Include="..\src\UElemento.pas"/>
+			<DCCReference Include="..\src\UAtributo.pas"/>
+			<DCCReference Include="..\src\UTexto.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -110,9 +115,6 @@
 					<Source>
 						<Source Name="MainSource">StringrTests.dpr</Source>
 					</Source>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Test\</Language>
-					</Language>
 				</Delphi.Personality>
 				<UnitTesting>
 					<TestFramework>DUnit / Delphi Win32</TestFramework>

@@ -6,10 +6,10 @@
 			<Projects Include="Stringr2009.dproj">
 				<Dependencies/>
 			</Projects>
-			<Projects Include="Test\StringrTests.dproj">
+			<Projects Include="..\Test\StringrTests.dproj">
 				<Dependencies/>
 			</Projects>
-			<Projects Include="Demo\StringrDemo.dproj">
+			<Projects Include="..\Demo\StringrDemo.dproj">
 				<Dependencies/>
 			</Projects>
 		</ItemGroup>
@@ -30,22 +30,22 @@
 			<MSBuild Targets="Make" Projects="Stringr2009.dproj"/>
 		</Target>
 		<Target Name="StringrTests">
-			<MSBuild Projects="Test\StringrTests.dproj"/>
+			<MSBuild Projects="..\Test\StringrTests.dproj"/>
 		</Target>
 		<Target Name="StringrTests:Clean">
-			<MSBuild Targets="Clean" Projects="Test\StringrTests.dproj"/>
+			<MSBuild Targets="Clean" Projects="..\Test\StringrTests.dproj"/>
 		</Target>
 		<Target Name="StringrTests:Make">
-			<MSBuild Targets="Make" Projects="Test\StringrTests.dproj"/>
+			<MSBuild Targets="Make" Projects="..\Test\StringrTests.dproj"/>
 		</Target>
 		<Target Name="StringrDemo">
-			<MSBuild Projects="Demo\StringrDemo.dproj"/>
+			<MSBuild Projects="..\Demo\StringrDemo.dproj"/>
 		</Target>
 		<Target Name="StringrDemo:Clean">
-			<MSBuild Targets="Clean" Projects="Demo\StringrDemo.dproj"/>
+			<MSBuild Targets="Clean" Projects="..\Demo\StringrDemo.dproj"/>
 		</Target>
 		<Target Name="StringrDemo:Make">
-			<MSBuild Targets="Make" Projects="Demo\StringrDemo.dproj"/>
+			<MSBuild Targets="Make" Projects="..\Demo\StringrDemo.dproj"/>
 		</Target>
 		<Target Name="Build">
 			<CallTarget Targets="Stringr2009;StringrTests;StringrDemo"/>

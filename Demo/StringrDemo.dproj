@@ -22,7 +22,7 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_UsePackage>Stringr2009</DCC_UsePackage>
 			<UsePackages>true</UsePackages>
-			<DCC_DcuOutput>.\temp</DCC_DcuOutput>
+			<DCC_DcuOutput>..\temp</DCC_DcuOutput>
 			<DCC_DependencyCheckOutputName>StringrDemo.exe</DCC_DependencyCheckOutputName>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
@@ -106,9 +106,6 @@
 						<Excluded_Packages Name="$(BDS)\bin\dcloffice2k120.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDS)\bin\dclofficexp120.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
 					</Excluded_Packages>
-					<Language>
-						<Language Name="RootDir">D:\Meus documentos\Desenvolvimento\Projetos\Stringr\Demo\</Language>
-					</Language>
 				</Delphi.Personality>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
