@@ -1,0 +1,4 @@
+Testes com lista:
+- a lista deve ter abertura e fechamento (lançar exceção)
+- a lista deve ter um nome
+- 

@@ -35,33 +35,33 @@ format='dd mm yyyy' é válido.
 format='dd \'de\' mmmm \'de\' yyyy' é válido e equivale a "dd 'de' mmmm 'de' yyyy", que
 resultaria, por exemplo, em "25 de janeiro de 2013".
 
-- Listas (loops)
-{list nome_da_lista}
+- Loops
+{loop nome_do_loop}
  ...
-{/list}
+{/loop}
 
-Uma lista determina uma região do template sujeita a repetições. Todo o conteúdo dentro
-da lista será repetido até que o programa que utiliza o template sinalize o fim da lista.
+Um loop determina uma região do template sujeita a repetições. Todo o conteúdo dentro
+do loop será repetido até que o programa que utiliza o template sinalize o fim do loop.
 
-Os nomes dos parâmetros da lista devem ter o seguinte formato:
-nome_da_lista.nome_do_parâmetro
+Os nomes dos parâmetros do loop devem ter o seguinte formato:
+nome_do_loop.nome_do_parâmetro
 Isto significa que é possível ter um parâmetro {p} em qualquer lugar do template e um
-parâmetro {nome_da_lista.p} somente dentro da lista de mesmo nome, sem que haja conflitos.
-se um parâmetro {p} aparecer dentro de uma lista, será substituído pelo valor correspondente
-como em qualquer outro lugar do texto. Os parâmetros referenciados com o nome da lista
+parâmetro {nome_do_loop.p} somente dentro do loop de mesmo nome, sem que haja conflitos.
+se um parâmetro {p} aparecer dentro de um loop, será substituído pelo valor correspondente
+como em qualquer outro lugar do texto. Os parâmetros referenciados com o nome do loop
 tem escopo local e seus valores devem ser atualizados a cada iteração ou permanecerão vazios.
 Os atributos se aplicam a cada parâmetro individualmente e se mantem os mesmos a cada
 iteração.
 
 Exemplo:
 
-{list Cliente}
+{loop Cliente}
 Nome:       {Cliente.Nome}
 Endereço:   {Cliente.Endereco length=10}
 
-{/list}
+{/loop}
 
-Se esta lista tiver dois elementos, a saída será semelhante a esta:
+Se este loop tiver duas iterações, a saída será semelhante a esta:
 Nome:       José da Silva
 Endereço:   Rua Joaqui        --> truncado para 10 caracteres
 
@@ -77,14 +77,14 @@ var
 begin
   Template := TSTringr.Create('template.txt');
   Template['nome'].Valor := 'Evandro';
-  Template.OnList = ProcessaLista;
+  Template.OnList = ProcessaLoop;
 end;
 
-procedure TMinhaClasse.ProcessaLista(sender: TObject; Lista: TListaTemplate; var FimDaLista: boolean);
+procedure TMinhaClasse.ProcessaLoop(sender: TObject; Loop: TLoop; var FimLoop: boolean);
 begin
-  if (Lista.Nome = 'clientes') then
+  if (Loop.Nome = 'clientes') then
   begin
-    Lista['nome'].Valor := 'José da Silva';
-    FimDaLista := True; // o evento não será mais chamado
+    Loop['nome'].Valor := 'José da Silva';
+    FimLoop := True; // o evento não será mais chamado
   end;
 end;

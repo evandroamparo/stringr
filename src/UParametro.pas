@@ -73,23 +73,22 @@ begin
 
   Result := FValor;
 
-//  if Valor <> '' then
-    for i := 0 to FAtributos.Count - 1 do
+  for i := 0 to FAtributos.Count - 1 do
+  begin
+    if (FAtributos[i] is TAtributoFormat) then
     begin
-      if (FAtributos[i] is TAtributoFormat) then
-      begin
-        if (LowerCase(Nome) = 'date') then
-          Result := (FAtributos[i] as TAtributoFormat).Transformar(Date)
-        else if (LowerCase(Nome) = 'time') then
-          Result := (FAtributos[i] as TAtributoFormat).Transformar(Time)
-        else if (LowerCase(Nome) = 'datetime') then
-          Result := (FAtributos[i] as TAtributoFormat).Transformar(Now);
-      end
-      else if (FAtributos[i] is TAtributoLength) then
-        Result := (FAtributos[i] as TAtributoLength).Transformar(Result)
-      else if (FAtributos[i] is TAtributoCase) then
-        Result := (FAtributos[i] as TAtributoCase).Transformar(Result);
-    end;
+      if (LowerCase(Nome) = 'date') then
+        Result := (FAtributos[i] as TAtributoFormat).Transformar(Date)
+      else if (LowerCase(Nome) = 'time') then
+        Result := (FAtributos[i] as TAtributoFormat).Transformar(Time)
+      else if (LowerCase(Nome) = 'datetime') then
+        Result := (FAtributos[i] as TAtributoFormat).Transformar(Now);
+    end
+    else if (FAtributos[i] is TAtributoLength) then
+      Result := (FAtributos[i] as TAtributoLength).Transformar(Result)
+    else if (FAtributos[i] is TAtributoCase) then
+      Result := (FAtributos[i] as TAtributoCase).Transformar(Result);
+  end;
 end;
 
 end.
