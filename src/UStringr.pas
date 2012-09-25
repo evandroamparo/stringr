@@ -95,14 +95,12 @@ begin
   while FParser.ContemElemento do
   begin
     Elemento := FParser.ProximoElemento;
-    if Elemento is TTexto then
-      Result := Result + Elemento.ToString
-    else if Elemento is TParametro then
+    if Elemento is TParametro then
     begin
       (Elemento as TParametro).Valor :=
         FParametros.Values[WideLowerCase((Elemento as TParametro).Nome)];
-      Result := Result + Elemento.ToString;
     end;
+    Result := Result + Elemento.ToString
   end;
 end;
 

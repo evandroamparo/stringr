@@ -38,6 +38,7 @@ contains
   UAtributoFormat in 'UAtributoFormat.pas',
   UParametro in 'UParametro.pas',
   UCustomParser in 'UCustomParser.pas',
-  UDefaultParser in 'UDefaultParser.pas';
+  UDefaultParser in 'UDefaultParser.pas',
+  ULoop in 'ULoop.pas';
 
 end.

@@ -5,10 +5,10 @@ Somente nome do parâmetro:
 Atributos e valores:
 {(?gi)(\w+)( (.+))?}
 
-Listas (abertura e fechamento):
+Loops (abertura e fechamento):
 {(?gi)(\/?)(\w+)( (.+))?}
 
-Listas com parâmetros locais:
+Loops com parâmetros locais:
 {(?gi)(\/?)(((\w+)\.)?(\w+))( (.+?))?}
 
 ------------
@@ -25,11 +25,11 @@ Entrada:
 {parametro atributo1=valor1 atributo2=valor2}
 {parametro atributo1=valor1 atributo2='val\'or2'}
 {parametro atributo='v a l ó r'}
-{list nome_lista}
-{nome_lista.parametro}
-{nome_lista.parametro atributo='valor'}
-{/list}
-{list}
+{loop nome_loop}
+{nome_loop.parametro}
+{nome_loop.parametro atributo='valor'}
+{/loop}
+{loop}
 
 
 Teste de substituição:
@@ -45,10 +45,10 @@ $\7: <$7>
 
 Subexpressões:
 $0: <{expressão inteira}>
-$1: </> (fim da lista) ou vazio
-$2: <parametro> (parâmetro comum - é preferível o $5) ou <nome_lista.parametro> (parâmetro da lista) ou "list" (início de lista)
-$3: <nome_lista.> ou vazio
-$4: <nome_lista> (parâmetro da lista) ou vazio
-$5: <parametro> (parâmetro comum ou da lista) ou "list" (início de lista)
-$6: < nome_lista>
-$7: <nome_lista> (início de lista) ou atributos (parâmetro comum ou da lista)
+$1: </> (fim do loop) ou vazio
+$2: <parametro> (parâmetro comum - é preferível o $5) ou <nome_loop.parametro> (parâmetro do loop) ou "loop" (início de loop)
+$3: <nome_loop.> ou vazio
+$4: <nome_loop> (parâmetro do loop) ou vazio
+$5: <parametro> (parâmetro comum ou do loop) ou "loop" (início de loop)
+$6: < nome_loop>
+$7: <nome_loop> (início de loop) ou atributos (parâmetro comum ou do loop)
